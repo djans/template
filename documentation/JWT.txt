@@ -1,0 +1,195 @@
+To use **JWT (JSON Web Token)** with **Open Liberty** for **authorization** and **group-based security**, you need to follow a series of steps to configure Open Liberty for JWT-based authentication and authorization. This includes setting up JWT validation, extracting claims, and using groups for role-based access control (RBAC).
+
+### Steps to Secure Open Liberty with JWT and Group-Based Authorization:
+
+1. **Include Dependencies for JWT and Security in Open Liberty**
+2. **Configure JWT Authentication**
+3. **Extract JWT Claims for Group-Based Authorization**
+4. **Set Up Role and Group-based Security**
+5. **Test and Secure Endpoints**
+
+### 1. Include Dependencies for JWT and Security in Open Liberty
+
+To begin with, make sure you have the necessary security-related features enabled in Open Liberty. You'll need to include the appropriate dependencies in your `server.xml` configuration.
+
+#### Example `server.xml` Configuration:
+
+```xml
+<server description="Open Liberty Server">
+    <featureManager>
+        <!-- Enable required features for JWT and security -->
+        <feature security-2.0 />
+        <feature jwt-1.0 />
+        <feature appSecurity-2.0 />
+    </featureManager>
+
+    <!-- Authentication settings for JWT -->
+    <httpEndpoint host="*" httpPort="9080" httpsPort="9443" id="defaultHttpEndpoint"/>
+
+    <application contextRoot="/" name="myApp">
+        <war file="myApp.war"/>
+    </application>
+
+    <!-- JWT Authentication configuration -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Secure Resources</web-resource-name>
+            <url-pattern>/secure/*</url-pattern> <!-- Protect endpoints -->
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>user</role-name> <!-- Define roles -->
+        </auth-constraint>
+    </security-constraint>
+
+    <!-- Define the JWT Validation mechanism -->
+    <jwt authentication="true" realm="myRealm">
+        <signatureAlgorithm>HS256</signatureAlgorithm>  <!-- Define algorithm (HS256/RS256) -->
+        <jwtClaim name="groups" />
+        <jwtClaim name="role" />
+    </jwt>
+</server>
+```
+
+### Explanation:
+
+1. **`security-2.0`** and **`jwt-1.0`**: Enable the security and JWT features.
+2. **`httpEndpoint`**: Define HTTP ports.
+3. **`jwt`**: Configure JWT authentication, where you define the signature algorithm and the claims you want to extract.
+4. **`security-constraint`**: Define which URL patterns are protected, and which roles or groups are required.
+
+### 2. Configure JWT Authentication
+
+Open Liberty can authenticate JWT tokens, but it requires you to configure a **JWT provider**. You also need to specify which JWT claims will be used to control access.
+
+#### Example JWT Authentication Setup:
+
+* You can specify the JWT signature algorithm (e.g., `HS256`, `RS256`) based on the method used to sign your JWT.
+* The JWT claim `groups` will be used to assign user groups, and the claim `role` can be used for role-based access control (RBAC).
+
+The above configuration in the `server.xml` already includes basic JWT setup to read the `groups` and `role` claims. These claims are essential for controlling access to your application.
+
+### 3. Extract JWT Claims for Group-Based Authorization
+
+Once JWT authentication is enabled, Open Liberty will automatically extract claims like `groups` or `role` from the JWT token. You can configure **group-based authorization** using these claims.
+
+#### Example `application.xml` or Web Application Configuration:
+
+If you want to map groups to specific roles for access control, you can define a security role in your application.
+
+```xml
+<application>
+    <security-role-mapping>
+        <role-name>admin</role-name>
+        <group-name>adminGroup</group-name>
+    </security-role-mapping>
+    <security-role-mapping>
+        <role-name>user</role-name>
+        <group-name>userGroup</group-name>
+    </security-role-mapping>
+</application>
+```
+
+In this example, Open Liberty will map the `adminGroup` claim from the JWT to the role `admin`, and `userGroup` to the role `user`.
+
+### 4. Set Up Role and Group-Based Security
+
+You can define security constraints based on roles or groups, which are extracted from JWT claims. For example, you might want to secure a certain resource or URL pattern so that only specific users (based on JWT groups or roles) can access it.
+
+#### Example Security Constraints:
+
+```xml
+<security-constraint>
+    <web-resource-collection>
+        <web-resource-name>Admin Resource</web-resource-name>
+        <url-pattern>/admin/*</url-pattern> <!-- Protect the admin URL pattern -->
+    </web-resource-collection>
+    <auth-constraint>
+        <role-name>admin</role-name> <!-- Require the admin role -->
+    </auth-constraint>
+</security-constraint>
+
+<security-constraint>
+    <web-resource-collection>
+        <web-resource-name>User Resource</web-resource-name>
+        <url-pattern>/user/*</url-pattern> <!-- Protect the user URL pattern -->
+    </web-resource-collection>
+    <auth-constraint>
+        <role-name>user</role-name> <!-- Require the user role -->
+    </auth-constraint>
+</security-constraint>
+```
+
+### 5. Test and Secure Endpoints
+
+#### Testing JWT Authorization
+
+1. **Generate a JWT**: Use a library like `jjwt` or `jsonwebtoken` in JavaScript to create a JWT token. For example:
+
+   * JWT Payload (Example):
+
+   ```json
+   {
+       "sub": "john_doe",
+       "role": "user",
+       "groups": ["userGroup", "adminGroup"],
+       "iat": 1632534437
+   }
+   ```
+
+2. **Send the JWT in the Authorization Header**: When making requests to the protected endpoints (like `/secure/*` or `/admin/*`), you need to send the JWT token in the `Authorization` header.
+
+   Example with **cURL**:
+
+   ```bash
+   curl -X GET http://localhost:9080/secure/resource \
+   -H "Authorization: Bearer <your_jwt_token>"
+   ```
+
+   In this case, Open Liberty will validate the JWT and check the `groups` or `role` claims to decide whether the request should be authorized.
+
+---
+
+### Final `server.xml` Example:
+
+Here’s a consolidated example for Open Liberty configuration to support JWT-based security with group authorization:
+
+```xml
+<server description="Open Liberty Server">
+    <featureManager>
+        <feature security-2.0 />
+        <feature jwt-1.0 />
+        <feature appSecurity-2.0 />
+    </featureManager>
+
+    <httpEndpoint host="*" httpPort="9080" httpsPort="9443" id="defaultHttpEndpoint"/>
+
+    <application contextRoot="/" name="myApp">
+        <war file="myApp.war"/>
+    </application>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Secure Resources</web-resource-name>
+            <url-pattern>/secure/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>user</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <jwt authentication="true" realm="myRealm">
+        <signatureAlgorithm>HS256</signatureAlgorithm>
+        <jwtClaim name="groups" />
+        <jwtClaim name="role" />
+    </jwt>
+</server>
+```
+
+### Recap:
+
+1. **JWT Authentication**: JWT tokens are validated automatically by Open Liberty using the `jwt-1.0` feature.
+2. **Group and Role Extraction**: Claims like `role` and `groups` are extracted and used for authorization.
+3. **Security Constraints**: Roles (from the JWT claims) are used to define access control on specific resources.
+4. **JWT in Authorization Header**: Make sure your requests contain a valid JWT in the `Authorization` header (`Bearer <jwt_token>`).
+
+With this setup, Open Liberty should be able to perform JWT authentication and authorization based on user roles or groups. Let me know if you need further clarification!
