@@ -1,0 +1,138 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout.html}">
+    <head>
+        <head>
+            <meta charset="UTF-8">
+            <title>Votre page</title>
+        <!-- INJECTION IN THE LAYOUT -->
+        <th:block th:fragment="headcontent">
+            <script>
+                $(document).ready(function () {
+                    document.getElementById("linkreleve").style.backgroundColor = "red";
+                });
+            </script>
+        </th:block>
+    </head>
+
+    <body>
+    <!-- BODY SEARCH -->
+        <section layout:fragment="bodysearch" style="margin-top:10px">
+            <p class="mb-5"></p>
+            <div class="container ms-3">
+                <table width="100%">
+                    <tr >
+                        <td width="300px">
+                            <label th:text="#{releve.courtier}" for="Courtier"></label>
+                        </td>
+                        <td>
+                            <select id="Courtier" name="Courtier">
+                                <option value="" selected></option>
+                                <option value="9645">Banque Nationale Investissements-9645</option>
+                                <option value="7954">Banque nationale du Canada-7954</option>
+                                <option value="7947">Banque nationale Épargne et Placements-7947</option>
+                                <option value="9952">CABN PLacements-9952</option>
+                                <option value="3436">Cabinet d'assurance Banque Nationale-3436</option>
+                            </select>
+                            <span style="color: red;">*</span>
+                        </td>
+                    </tr>
+                    <tr id="ligneTypeDocument" style="display: none;">
+                        <td width="300px">
+                            <label for="TypeDocument">Type de document</label>
+                        </td>
+                        <td>
+                            <select id="TypeDocument" name="TypeDocument">
+                                <option value="" selected></option>
+                            </select>
+                            <span style="color: red;">*</span>
+                        </td>
+                    </tr>
+                    <tr id="ligneSousTypeDocument" style="display: none;">
+                        <td width="300px">
+                            <label for="SousTypeDocument">Sous Type de Document</label>
+                        </td>
+                        <td>
+                            <select id="SousTypeDocument" name="SousTypeDocument">
+                                <option value="" selected></option>
+                            </select>
+                            <span style="color: red;">*</span>
+                        </td>
+                    </tr>
+                    <tr id="ligneAnneeFiscale" style="display: none;">
+                        <td width="300px">
+                            <label for="AnneeFiscale">Année fiscale</label>
+                        </td>
+                        <td>
+                            <input type="number" id="AnneeFiscale" name="AnneeFiscale"
+                                   min="2000" max="2030" step="1" value="2025"
+                                   style="width: 6em;" />
+                            <span style="color: red;">*</span>
+                        </td>
+                    </tr>
+
+                    <tr id="ligneOperation" style="display: none;">
+                        <td width="300px">
+                            <label for="Operation">Opération</label>
+                        </td>
+                        <td>
+                            <select id="Operation" name="Operation">
+                                <option value="BOUGHT">Achat</option>
+                                <option value="SOLD">Vente</option>
+                            </select>
+                            <span style="color: red;">*</span>
+                        </td>
+                    </tr>
+                    <tr id="ligneCodeProduit" style="display: none;">
+                        <td width="300px">
+                            <label for="Codeproduit">Code produit</label>
+                        </td>
+                        <td>
+                            <input type="Codeproduit" id="Codeproduit" name="Codeproduit"/>
+                            <span style="color: red;">*</span>
+                        </td>
+                    </tr>
+                    <tr id="ligneDateDebut" style="display: none;">
+                        <td width="300px">
+                            <label for="DateDebut">Date début</label>
+                        </td>
+                        <td>
+                            <input type="date" id="DateDebut" name="DateDebut"/>
+                            <span style="color: red;">*</span>
+                        </td>
+                    </tr>
+                    <tr id="ligneDateFin" style="display: none;">
+                        <td width="300px">
+                            <label for="DateFin">Date fin</label>
+                        </td>
+                        <td>
+                            <input type="date" id="DateFin" name="DateFin"/>
+                            <span style="color: red;">*</span>
+                        </td>
+                    </tr>
+                    <tr id="ligneNumeroCompte" style="display: none;">
+                        <td width="300px">
+                            <label for="NumeroCompte">Numéro de compte</label>
+                        </td>
+                        <td>
+                            <input type="text" id="NumeroCompte" name="NumeroCompte"/>
+                            <span style="color: red;">*</span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><input type="submit" value="Soumettre" onclick="window.location.href='/searchReleve'"/></td>
+                    </tr>
+                </table>
+                <span style="color: red;">* = Champ obligatoire</span>
+            </div>
+        </section>
+    <!-- BODY RESULT -->
+    <section layout:fragment="bodyresult" style="margin-top:10px">
+        <div class="container ms-3">
+
+        </div>
+    </section>
+    </body>
+</html>

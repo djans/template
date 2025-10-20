@@ -1,0 +1,21 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout.html}">
+<head>
+    <!-- INJECTION IN THE LAYOUT -->
+    <th:block th:fragment="headcontent">
+        <script>
+            $(document).ready(function () {
+                document.getElementById("linkfacture").style.backgroundColor = "red";
+            });
+        </script>
+    </th:block>
+</head>
+<body>
+<!-- BODY -->
+<section layout:fragment="body">
+    <p>FACTURE</p>
+</section>
+</body>
+</html>

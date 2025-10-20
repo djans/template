@@ -1,0 +1,36 @@
+<!-- HTML HEADER -->
+    <div th:fragment="head" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">RDI</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a id="linkreleve" class="nav-link" href="/releve" >RELEVES</a>
+                        </li>
+                        <div sec:authorize="hasRole('ROLE_ROLE03')">
+                            <li class="nav-item">
+                                <a id="linkfacture" class="nav-link" href="/facture">FACTURE</a>
+                            </li>
+                        </div>
+                        <li class="nav-item">
+                            <a id="linkxmlgouv" class="nav-link" href="/xmlgouv">XML GOUV</a>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav ms-auto">
+                        <li>
+                            <a th:href="@{'/changeLanguage?lang=fr&path=' + ${contextPath}}" th:text="#{FR}"></a>
+                        </li>
+                        <li>
+                            <a th:href="@{'/changeLanguage?lang=en&path='} + ${contextPath}" th:text="#{EN}"></a>
+                            <a th:href="@{'/changeLanguage?lang=en&path='} + ${contextPath}" th:text="#{EN}"></a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </nav>
+    </div>
