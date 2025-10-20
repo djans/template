@@ -1,0 +1,174 @@
+swagger: "2.0"
+info:
+  x-ibm-name: iamx-oauth
+  description: More informations here(https://wiki.bnc.ca/display/IAMAS/IAMx+Documents)
+  version: 1.2.5
+  title: IAMx oAuth Tokens Management
+  contact:
+    email: support.IAM@bnc.ca
+host: localhost:9011
+basePath: /public/iamxoauth/api/v1
+tags:
+- name: Tokens
+  description: Operations about Token
+schemes:
+- https
+securityDefinitions:
+  clientIdHeader:
+    type: apiKey
+    in: header
+    name: X-IBM-Client-Id
+  OauthSecurity:
+    type: oauth2
+    flow: accessCode
+    authorizationUrl: https://nothing
+    tokenUrl: https://nothing
+    scopes:
+      system:iamx:token:create: Create a token
+security:
+- clientIdHeader: []
+paths:
+  /tokens:
+    post:
+      tags:
+      - Tokens
+      summary: Create a token
+      description: This API requires Authentication Bearer
+      operationId: createToken
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: IamxTokenRequest
+        description: 'Create Token Payload Object '
+        required: true
+        schema:
+          $ref: '#/definitions/IamxTokenRequest'
+      responses:
+        200:
+          description: IamxTokenResponse created successfully.
+          schema:
+            $ref: '#/definitions/IamxTokenResponse'
+        401:
+          description: Unauthorized, IAMX_AUTHENTIFICATION_FAILED
+          schema:
+            $ref: '#/definitions/ResponseMessage'
+        500:
+          $ref: '#/responses/ServerError'
+  /tokens/captcha:
+    post:
+      tags:
+      - Tokens
+      summary: Create a token to use for captcha protected forms
+      description: This API is for non-authenticated user.
+      operationId: createCaptchaToken
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: iamxProspectRequest
+        description: 'The recaptcha response representing the value of the recaptcha. '
+        required: true
+        schema:
+          $ref: '#/definitions/IamxProspectRequest'
+      responses:
+        200:
+          description: IamxTokenResponse created successfully.
+          schema:
+            $ref: '#/definitions/IamxTokenResponse'
+        400:
+          $ref: '#/responses/BadRequest'
+        500:
+          $ref: '#/responses/ServerError'
+definitions:
+  IamxTokenResponse:
+    type: object
+    properties:
+      accessToken:
+        type: string
+      tokenType:
+        type: string
+      expiresIn:
+        type: string
+      scope:
+        type: string
+  IamxTokenRequest:
+    type: object
+    properties:
+      grantType:
+        type: string
+      redirectUri:
+        type: string
+      clientId:
+        type: string
+      code:
+        type: string
+      codeVerifier:
+        type: string
+  IamxProspectRequest:
+    type: object
+    properties:
+      reCaptcha:
+        type: string
+  ResponseMessage:
+    required:
+    - code
+    - message
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+  ServiceInformation:
+    type: object
+    properties:
+      timestamp:
+        type: string
+        format: date-time
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      validationErrors:
+        type: array
+        items:
+          $ref: '#/definitions/ServiceErrorDetails'
+  ServiceErrorDetails:
+    type: object
+    properties:
+      message:
+        type: string
+      description:
+        type: string
+responses:
+  Created:
+    description: Resource created
+    headers:
+      location:
+        description: The location of the newly created resource
+        type: string
+  NotFound:
+    description: Entity not found
+  BadRequest:
+    description: The requester is unauthorized.
+    schema:
+      $ref: '#/definitions/ServiceInformation'
+  ServerError:
+    description: Fatal server error
+    schema:
+      $ref: '#/definitions/ServiceInformation'
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+x-ibm-configuration:
+  testable: true
+  enforced: true
+  phase: realized
+x-ibm-endpoints:
+- endpointUrl: https://api-ti.bnc.ca/bnc/ti
+  type:
+  - development
+...

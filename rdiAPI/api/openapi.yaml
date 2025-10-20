@@ -1,0 +1,735 @@
+openapi: 3.0.1
+info:
+  description: List of all endpoints used in API Document Management V5
+  license:
+    name: National Bank of Canada License
+    url: https://www.bnc.ca/licenses/LICENSE.0
+  title: ECM API DocManagement GCP
+  version: "5.1"
+  x-ibm-name: ecm-api-docmanagement
+servers:
+- url: https://localhost:9010/ecm/dcmgmt/v5
+security:
+- api-key-1: []
+tags:
+- description: Private Controller
+  name: SYSTEM & EMPLOYEE API DOCUMENT MANAGEMENT V5
+paths:
+  /documents:
+    post:
+      deprecated: false
+      description: Create Document and returns DocID
+      operationId: createDocumentPrivateUsingPOST_1
+      parameters:
+      - description: The business view Id
+        in: header
+        name: businessViewId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/createDocumentPrivateUsingPOST_1_request"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: object
+          description: OK
+        "201":
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: "docId, document ID"
+        "400":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: "Bad Request, global error. Code ERR_CMN_TE_02"
+        "404":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: "Not found, global error. Code ERR_CMN_TE_03"
+        "412":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: "Gateway mapping issue , Code ERR_CRE_TE_07"
+        "417":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: "Gateway config issue, Code ERR_CRE_TE_01 , ERR_CRE_TE_02,\
+            \ ERR_CRE_TE_08, ERR_CRE_TE_09 , ERR_CRE_TE_10,ERR_HDR_TE_01, ERR_HDR_TE_02"
+        "422":
+          content: {}
+          description: "Client issue, Required metadata missing, Code ERR_CRE_TE_04"
+        "428":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: "Client issue, clinet request missing meta data, Code ERR_CRE_TE_03"
+        "500":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: "Internal Server Error, global error. Code ERR_CRE_TE_06"
+        "502":
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: "Gateway Error, routing issue. Code ERR_CRE_TE_06"
+      summary: Create new document
+      tags:
+      - SYSTEM & EMPLOYEE API DOCUMENT MANAGEMENT V5
+      x-content-type: multipart/form-data
+      x-accepts:
+      - '*/*'
+  /documents/criteria:
+    post:
+      deprecated: false
+      description: Search Document by criteria
+      operationId: searchUsingPOST_1
+      parameters:
+      - description: The Business View Id
+        in: header
+        name: businessViewId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Search criteria"
+        description: searchCriteria
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchResult"
+          description: An array of document and there properties and search infos
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: "Bad Request, global error. Code ERR_CMN_TE_02"
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: "Not found, global error. Code ERR_CMN_TE_03"
+        "412":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: "Hub mapping issue , Code ERR_CRE_TE_07"
+        "417":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: "Hub config issue, Code ERR_CRE_TE_01 , ERR_CRE_TE_02, ERR_CRE_TE_08,\
+            \ ERR_CRE_TE_09 , ERR_CRE_TE_10,ERR_HDR_TE_01, ERR_HDR_TE_02"
+        "428":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: "Client issue, clinet request is null, Code ERR_SER_TE_03"
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: "Internal Server Error, global error. Code ERR_CMN_TE_04"
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: "Hub Error, routing issue. Code ERR_CRE_TE_06"
+      summary: Search documents
+      tags:
+      - SYSTEM & EMPLOYEE API DOCUMENT MANAGEMENT V5
+      x-codegen-request-body-name: searchCriteria
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /documents/{docId}/content:
+    get:
+      deprecated: false
+      description: Get Document by DocID
+      operationId: getDocumentUsingGET_1
+      parameters:
+      - description: The Business View Id
+        in: header
+        name: businessViewId
+        required: true
+        schema:
+          type: string
+      - description: The Document Id
+        in: path
+        name: docId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/octet-stream:
+              schema:
+                $ref: "#/components/schemas/Document"
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Document"
+          description: Document content
+        "400":
+          content:
+            application/octet-stream:
+              schema:
+                $ref: "#/components/schemas/Error"
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: "Bad Request, global error. Code ERR_CMN_TE_02"
+        "404":
+          content:
+            application/octet-stream:
+              schema:
+                $ref: "#/components/schemas/Error"
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: "Not found, global error. Code ERR_CMN_TE_03"
+        "412":
+          content:
+            application/octet-stream:
+              schema:
+                $ref: "#/components/schemas/Error"
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: "Gateway mapping issue , Code ERR_CRE_TE_07"
+        "417":
+          content:
+            application/octet-stream:
+              schema:
+                $ref: "#/components/schemas/Error"
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: "Gateway config issue, Code ERR_CRE_TE_01 , ERR_CRE_TE_02,\
+            \ ERR_CRE_TE_08, ERR_CRE_TE_09 , ERR_CRE_TE_10,ERR_HDR_TE_01, ERR_HDR_TE_02"
+        "422":
+          content: {}
+          description: "Client issue, Required metadata missing, Code ERR_CRE_TE_04"
+        "428":
+          content:
+            application/octet-stream:
+              schema:
+                $ref: "#/components/schemas/Error"
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: "Client issue, clinet request missing meta data, Code ERR_CRE_TE_03"
+        "500":
+          content:
+            application/octet-stream:
+              schema:
+                $ref: "#/components/schemas/Error"
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: "Internal Server Error, global error. Code ERR_CRE_TE_06"
+        "502":
+          content:
+            application/octet-stream:
+              schema:
+                $ref: "#/components/schemas/Error"
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: "Gateway Error, routing issue. Code ERR_CRE_TE_06"
+      summary: Get document
+      tags:
+      - SYSTEM & EMPLOYEE API DOCUMENT MANAGEMENT V5
+      x-accepts:
+      - application/json
+      - application/octet-stream
+components:
+  schemas:
+    Criteria:
+      description: "Defines a criteria by name, operator and values"
+      properties:
+        name:
+          description: The criteria's name
+          example: docDtLoad
+          type: string
+        operator:
+          description: The criteria's operator
+          example: BETWEEN
+          type: string
+        values:
+          description: The list of values
+          example: 2017-01-01
+          items:
+            type: string
+          type: array
+      title: Criteria
+      type: object
+    Document:
+      description: Defines a document by id and a list of metadata
+      example:
+        metadata:
+        - name: docDtLoad
+          type: String
+          value: 2019-01-21
+        - name: docDtLoad
+          type: String
+          value: 2019-01-21
+        docId: docId
+        content: content
+      properties:
+        content:
+          description: The document's content
+          format: byte
+          pattern: "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+          type: string
+        docId:
+          description: The document's ID
+          type: string
+        metadata:
+          description: The document's metadata
+          items:
+            $ref: "#/components/schemas/Metadata"
+          type: array
+      title: Document
+      type: object
+    Error:
+      description: Represent an error produced by the API
+      example:
+        errorMessage: Unexpected error
+        errorCode: ITECC001
+      properties:
+        errorCode:
+          description: The error code
+          example: ITECC001
+          type: string
+        errorMessage:
+          description: The error message
+          example: Unexpected error
+          type: string
+      title: Error
+      type: object
+    Field:
+      description: "Defines a field's by name, sort order and type"
+      properties:
+        ascending:
+          description: "The type of sorting : ascending or descending"
+          type: boolean
+        name:
+          description: The field's name
+          example: docDtLoad
+          type: string
+        sortOrder:
+          description: The sort order
+          example: 1
+          format: int32
+          type: integer
+      title: Field
+      type: object
+    File:
+      properties:
+        absolute:
+          type: boolean
+        absoluteFile:
+          $ref: "#/components/schemas/File"
+        absolutePath:
+          type: string
+        canonicalFile:
+          $ref: "#/components/schemas/File"
+        canonicalPath:
+          type: string
+        directory:
+          type: boolean
+        executable:
+          type: boolean
+        file:
+          type: boolean
+        freeSpace:
+          format: int64
+          type: integer
+        hidden:
+          type: boolean
+        lastModified:
+          format: int64
+          type: integer
+        name:
+          type: string
+        parent:
+          type: string
+        parentFile:
+          $ref: "#/components/schemas/File"
+        path:
+          type: string
+        readable:
+          type: boolean
+        totalSpace:
+          format: int64
+          type: integer
+        usableSpace:
+          format: int64
+          type: integer
+        writable:
+          type: boolean
+      title: File
+      type: object
+    InputStream:
+      title: InputStream
+      type: object
+    Metadata:
+      description: Defines document's metadata's by name and value
+      example:
+        name: docDtLoad
+        type: String
+        value: 2019-01-21
+      properties:
+        name:
+          description: The metadata's name
+          example: docDtLoad
+          type: string
+        type:
+          description: The metadata's type
+          example: String
+          type: string
+        value:
+          description: The metadata's's value
+          example: 2019-01-21
+          properties: {}
+          type: object
+      title: Metadata
+      type: object
+    ModelAndView:
+      properties:
+        empty:
+          type: boolean
+        model:
+          properties: {}
+          type: object
+        modelMap:
+          additionalProperties:
+            properties: {}
+            type: object
+          type: object
+        reference:
+          type: boolean
+        status:
+          enum:
+          - 100 CONTINUE
+          - 101 SWITCHING_PROTOCOLS
+          - 102 PROCESSING
+          - 103 CHECKPOINT
+          - 200 OK
+          - 201 CREATED
+          - 202 ACCEPTED
+          - 203 NON_AUTHORITATIVE_INFORMATION
+          - 204 NO_CONTENT
+          - 205 RESET_CONTENT
+          - 206 PARTIAL_CONTENT
+          - 207 MULTI_STATUS
+          - 208 ALREADY_REPORTED
+          - 226 IM_USED
+          - 300 MULTIPLE_CHOICES
+          - 301 MOVED_PERMANENTLY
+          - 302 FOUND
+          - 302 MOVED_TEMPORARILY
+          - 303 SEE_OTHER
+          - 304 NOT_MODIFIED
+          - 305 USE_PROXY
+          - 307 TEMPORARY_REDIRECT
+          - 308 PERMANENT_REDIRECT
+          - 400 BAD_REQUEST
+          - 401 UNAUTHORIZED
+          - 402 PAYMENT_REQUIRED
+          - 403 FORBIDDEN
+          - 404 NOT_FOUND
+          - 405 METHOD_NOT_ALLOWED
+          - 406 NOT_ACCEPTABLE
+          - 407 PROXY_AUTHENTICATION_REQUIRED
+          - 408 REQUEST_TIMEOUT
+          - 409 CONFLICT
+          - 410 GONE
+          - 411 LENGTH_REQUIRED
+          - 412 PRECONDITION_FAILED
+          - 413 PAYLOAD_TOO_LARGE
+          - 413 REQUEST_ENTITY_TOO_LARGE
+          - 414 URI_TOO_LONG
+          - 414 REQUEST_URI_TOO_LONG
+          - 415 UNSUPPORTED_MEDIA_TYPE
+          - 416 REQUESTED_RANGE_NOT_SATISFIABLE
+          - 417 EXPECTATION_FAILED
+          - 418 I_AM_A_TEAPOT
+          - 419 INSUFFICIENT_SPACE_ON_RESOURCE
+          - 420 METHOD_FAILURE
+          - 421 DESTINATION_LOCKED
+          - 422 UNPROCESSABLE_ENTITY
+          - 423 LOCKED
+          - 424 FAILED_DEPENDENCY
+          - 426 UPGRADE_REQUIRED
+          - 428 PRECONDITION_REQUIRED
+          - 429 TOO_MANY_REQUESTS
+          - 431 REQUEST_HEADER_FIELDS_TOO_LARGE
+          - 451 UNAVAILABLE_FOR_LEGAL_REASONS
+          - 500 INTERNAL_SERVER_ERROR
+          - 501 NOT_IMPLEMENTED
+          - 502 BAD_GATEWAY
+          - 503 SERVICE_UNAVAILABLE
+          - 504 GATEWAY_TIMEOUT
+          - 505 HTTP_VERSION_NOT_SUPPORTED
+          - 506 VARIANT_ALSO_NEGOTIATES
+          - 507 INSUFFICIENT_STORAGE
+          - 508 LOOP_DETECTED
+          - 509 BANDWIDTH_LIMIT_EXCEEDED
+          - 510 NOT_EXTENDED
+          - 511 NETWORK_AUTHENTICATION_REQUIRED
+          type: string
+        view:
+          $ref: "#/components/schemas/View"
+        viewName:
+          type: string
+      title: ModelAndView
+      type: object
+    Resource:
+      properties:
+        description:
+          type: string
+        file:
+          $ref: "#/components/schemas/File"
+        filename:
+          type: string
+        inputStream:
+          title: InputStream
+          type: object
+        open:
+          type: boolean
+        readable:
+          type: boolean
+        uri:
+          $ref: "#/components/schemas/URIC"
+        url:
+          $ref: "#/components/schemas/URL"
+      title: Resource
+      type: object
+    Search criteria:
+      description: Represent the request of a document's search by criteria
+      properties:
+        criteria:
+          description: The list of criteria
+          items:
+            $ref: "#/components/schemas/Criteria"
+          type: array
+        fields:
+          description: The list of fields
+          items:
+            $ref: "#/components/schemas/Field"
+          type: array
+        pageNumber:
+          description: The page's number to retrieve
+          example: 1
+          format: int32
+          type: integer
+        pageSize:
+          description: The number of items per page
+          example: 50
+          format: int32
+          type: integer
+      title: Search criteria
+      type: object
+    SearchDetails:
+      example:
+        totalItem: 1
+        totalPage: 5
+        pageSize: 6
+        currentPage: 0
+      properties:
+        currentPage:
+          format: int32
+          type: integer
+        pageSize:
+          format: int32
+          type: integer
+        totalItem:
+          format: int32
+          type: integer
+        totalPage:
+          format: int32
+          type: integer
+      title: SearchDetails
+      type: object
+    SearchResult:
+      example:
+        documents:
+        - metadata:
+          - name: docDtLoad
+            type: String
+            value: 2019-01-21
+          - name: docDtLoad
+            type: String
+            value: 2019-01-21
+          docId: docId
+          content: content
+        - metadata:
+          - name: docDtLoad
+            type: String
+            value: 2019-01-21
+          - name: docDtLoad
+            type: String
+            value: 2019-01-21
+          docId: docId
+          content: content
+        searchDetails:
+          totalItem: 1
+          totalPage: 5
+          pageSize: 6
+          currentPage: 0
+      properties:
+        documents:
+          items:
+            $ref: "#/components/schemas/Document"
+          type: array
+        searchDetails:
+          $ref: "#/components/schemas/SearchDetails"
+      title: SearchResult
+      type: object
+    URIC:
+      properties:
+        absolute:
+          type: boolean
+        authority:
+          type: string
+        fragment:
+          type: string
+        host:
+          type: string
+        opaque:
+          type: boolean
+        path:
+          type: string
+        port:
+          format: int32
+          type: integer
+        query:
+          type: string
+        rawAuthority:
+          type: string
+        rawFragment:
+          type: string
+        rawPath:
+          type: string
+        rawQuery:
+          type: string
+        rawSchemeSpecificPart:
+          type: string
+        rawUserInfo:
+          type: string
+        scheme:
+          type: string
+        schemeSpecificPart:
+          type: string
+        userInfo:
+          type: string
+      title: URI
+      type: object
+    URL:
+      properties:
+        authority:
+          type: string
+        content:
+          properties: {}
+          type: object
+        defaultPort:
+          format: int32
+          type: integer
+        deserializedFields:
+          title: URLStreamHandler
+          type: object
+        file:
+          type: string
+        host:
+          type: string
+        path:
+          type: string
+        port:
+          format: int32
+          type: integer
+        protocol:
+          type: string
+        query:
+          type: string
+        ref:
+          type: string
+        serializedHashCode:
+          format: int32
+          type: integer
+        userInfo:
+          type: string
+      title: URL
+      type: object
+    URLStreamHandler:
+      title: URLStreamHandler
+      type: object
+    View:
+      properties:
+        contentType:
+          type: string
+      title: View
+      type: object
+    createDocumentPrivateUsingPOST_1_request:
+      properties:
+        content:
+          description: The document to upload
+          format: binary
+          type: string
+        metadata:
+          description: The metadata list attached to the document
+          format: binary
+          type: string
+      required:
+      - content
+      - metadata
+      type: object
+  securitySchemes:
+    api-key-1:
+      description: ""
+      in: header
+      name: X-IBM-Client-Id
+      type: apiKey
+x-ibm-configuration:
+  enforced: true
+  testable: true
+  phase: realized
+x-ibm-endpoints:
+- endpointUrl: https://api-ti.bnc.ca/bnc/ti
+  type:
+  - development
+x-original-swagger-version: "2.0"
+

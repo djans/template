@@ -1,0 +1,766 @@
+---
+swagger: "2.0"
+info:
+  description: List of all endpoints used in API Document Management
+  version: "4.7"
+  title: ECM API DocManagement
+  license:
+    name: National Bank of Canada License
+    url: https://www.bnc.ca/licenses/LICENSE.0
+  x-ibm-name: ecm-api-docmanagement
+host: localhost:9010
+basePath: /doc-mgmt/v4
+tags:
+- name: SYSTEM & EMPLOYEE API DOCUMENT MANAGEMENT
+  description: Private Controller
+paths:
+  /documents:
+    get:
+      tags:
+      - SYSTEM & EMPLOYEE API DOCUMENT MANAGEMENT
+      summary: Get document
+      description: Get Document by DocID
+      operationId: getDocumentUsingGET
+      produces:
+      - application/octet-stream
+      - application/json
+      parameters:
+      - name: docId
+        in: header
+        description: docId
+        required: true
+        type: string
+      - name: viewId
+        in: header
+        description: viewId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Document content
+          schema:
+            $ref: '#/definitions/APIGetResponse'
+        400:
+          description: Bad Request, global error. Code ERR_CMN_TE_02
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        404:
+          description: Not found, global error. Code ERR_CMN_TE_03
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        412:
+          description: Gateway mapping issue , Code ERR_CRE_TE_07
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        417:
+          description: Gateway config issue, Code ERR_CRE_TE_01 , ERR_CRE_TE_02, ERR_CRE_TE_08,
+            ERR_CRE_TE_09 , ERR_CRE_TE_10,ERR_HDR_TE_01, ERR_HDR_TE_02
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        422:
+          description: Client issue, Required metadata missing, Code ERR_CRE_TE_04
+        428:
+          description: Client issue, clinet request missing meta data, Code ERR_CRE_TE_03
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        500:
+          description: Internal Server Error, global error. Code ERR_CRE_TE_06
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        502:
+          description: Gateway Error, routing issue. Code ERR_CRE_TE_06
+          schema:
+            $ref: '#/definitions/APIResponseError'
+      deprecated: false
+    post:
+      tags:
+      - SYSTEM & EMPLOYEE API DOCUMENT MANAGEMENT
+      summary: Create new document
+      description: Create Document and returns DocID
+      operationId: createDocumentPrivateUsingPOST
+      consumes:
+      - multipart/form-data
+      produces:
+      - '*/*'
+      parameters:
+      - name: fileContent
+        in: formData
+        description: The document to upload
+        required: true
+        type: file
+      - name: fileMetadata
+        in: formData
+        description: The metadata list attached to the document
+        required: true
+        type: file
+      - name: viewId
+        in: header
+        description: viewId
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+        201:
+          description: docId, document ID
+          schema:
+            $ref: '#/definitions/APICreateResponse'
+        400:
+          description: Bad Request, global error. Code ERR_CMN_TE_02
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        404:
+          description: Not found, global error. Code ERR_CMN_TE_03
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        412:
+          description: Gateway mapping issue , Code ERR_CRE_TE_07
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        417:
+          description: Gateway config issue, Code ERR_CRE_TE_01 , ERR_CRE_TE_02, ERR_CRE_TE_08,
+            ERR_CRE_TE_09 , ERR_CRE_TE_10,ERR_HDR_TE_01, ERR_HDR_TE_02
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        422:
+          description: Client issue, Required metadata missing, Code ERR_CRE_TE_04
+        428:
+          description: Client issue, clinet request missing meta data, Code ERR_CRE_TE_03
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        500:
+          description: Internal Server Error, global error. Code ERR_CRE_TE_06
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        502:
+          description: Gateway Error, routing issue. Code ERR_CRE_TE_06
+          schema:
+            $ref: '#/definitions/APIResponseError'
+      deprecated: false
+    put:
+      tags:
+      - SYSTEM & EMPLOYEE API DOCUMENT MANAGEMENT
+      summary: Update document metadata
+      description: Update document metadata by DocID
+      operationId: updateUsingPUT
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: clientUpdateRequest
+        description: clientUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/ClientUpdateRequest'
+      - name: viewId
+        in: header
+        description: viewId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Document is update
+          schema:
+            $ref: '#/definitions/APIUpdateResponse'
+        400:
+          description: Bad Request, global error. Code ERR_CMN_TE_02
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        404:
+          description: Not found, global error. Code ERR_CMN_TE_03
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        412:
+          description: Hub mapping issue , Code ERR_CRE_TE_07
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        417:
+          description: Hub config issue, Code ERR_CRE_TE_01 , ERR_CRE_TE_02, ERR_CRE_TE_08,
+            ERR_CRE_TE_09 , ERR_CRE_TE_10,ERR_HDR_TE_01, ERR_HDR_TE_02
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        422:
+          description: Client issue, Required metadata missing, Code ERR_CRE_TE_04
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        428:
+          description: Client issue, clinet request missing meta data, Code ERR_CRE_TE_03
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        500:
+          description: Internal Server Error, global error. Code ERR_CRE_TE_06
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        502:
+          description: Hub Error, routing issue. Code ERR_CRE_TE_06
+          schema:
+            $ref: '#/definitions/APIResponseError'
+      deprecated: false
+    patch:
+      tags:
+      - SYSTEM & EMPLOYEE API DOCUMENT MANAGEMENT
+      summary: Update document metadata
+      description: Update document metadata by DocID
+      operationId: updateUsingPATCH
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: clientUpdateRequest
+        description: clientUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/ClientUpdateRequest'
+      - name: viewId
+        in: header
+        description: viewId
+        required: true
+        type: string
+      responses:
+        200:
+          description: Document is update
+          schema:
+            $ref: '#/definitions/APIUpdateResponse'
+        400:
+          description: Bad Request, global error. Code ERR_CMN_TE_02
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        404:
+          description: Not found, global error. Code ERR_CMN_TE_03
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        412:
+          description: Hub mapping issue , Code ERR_CRE_TE_07
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        417:
+          description: Hub config issue, Code ERR_CRE_TE_01 , ERR_CRE_TE_02, ERR_CRE_TE_08,
+            ERR_CRE_TE_09 , ERR_CRE_TE_10,ERR_HDR_TE_01, ERR_HDR_TE_02
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        422:
+          description: Client issue, Required metadata missing, Code ERR_CRE_TE_04
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        428:
+          description: Client issue, clinet request missing meta data, Code ERR_CRE_TE_03
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        500:
+          description: Internal Server Error, global error. Code ERR_CRE_TE_06
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        502:
+          description: Hub Error, routing issue. Code ERR_CRE_TE_06
+          schema:
+            $ref: '#/definitions/APIResponseError'
+      deprecated: false
+  /documents/search:
+    post:
+      tags:
+      - SYSTEM & EMPLOYEE API DOCUMENT MANAGEMENT
+      summary: Search documents
+      description: Search Document by client request SQL
+      operationId: searchUsingPOST
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: clientSearchRequest
+        description: clientSearchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/ClientSearchRequest'
+      - name: viewId
+        in: header
+        description: viewId
+        required: true
+        type: string
+      responses:
+        200:
+          description: An array of document and there properties and search infos
+          schema:
+            $ref: '#/definitions/APISearchResponse'
+        400:
+          description: Bad Request, global error. Code ERR_CMN_TE_02
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        404:
+          description: Not found, global error. Code ERR_CMN_TE_03
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        412:
+          description: Hub mapping issue , Code ERR_CRE_TE_07
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        417:
+          description: Hub config issue, Code ERR_CRE_TE_01 , ERR_CRE_TE_02, ERR_CRE_TE_08,
+            ERR_CRE_TE_09 , ERR_CRE_TE_10,ERR_HDR_TE_01, ERR_HDR_TE_02
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        428:
+          description: Client issue, clinet request is null, Code ERR_SER_TE_03
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        500:
+          description: Internal Server Error, global error. Code ERR_CMN_TE_04
+          schema:
+            $ref: '#/definitions/APIResponseError'
+        502:
+          description: Hub Error, routing issue. Code ERR_CRE_TE_06
+          schema:
+            $ref: '#/definitions/APIResponseError'
+      deprecated: false
+definitions:
+  APICreateResponse:
+    type: object
+    properties:
+      docId:
+        type: string
+    title: APICreateResponse
+  APIGetResponse:
+    type: object
+    properties:
+      content:
+        type: string
+        format: byte
+      headers:
+        type: object
+    title: APIGetResponse
+  APIResponseError:
+    type: object
+    properties:
+      errorCode:
+        type: string
+      errorMessage:
+        type: string
+    title: APIResponseError
+  APISearchResponse:
+    type: object
+    properties:
+      documents:
+        type: array
+        items:
+          $ref: '#/definitions/DocumentBo'
+      searchInfos:
+        $ref: '#/definitions/SearchInfosResponse'
+    title: APISearchResponse
+  APIUpdateResponse:
+    type: object
+    properties:
+      docId:
+        type: string
+      properties:
+        type: array
+        items:
+          $ref: '#/definitions/Property'
+    title: APIUpdateResponse
+  ByteArrayResource:
+    type: object
+    properties:
+      byteArray:
+        type: string
+        format: byte
+      description:
+        type: string
+      file:
+        $ref: '#/definitions/File'
+      filename:
+        type: string
+      inputStream:
+        $ref: '#/definitions/InputStream'
+      open:
+        type: boolean
+      readable:
+        type: boolean
+      uri:
+        $ref: '#/definitions/URI'
+      url:
+        $ref: '#/definitions/URL'
+    title: ByteArrayResource
+  ClientSearchRequest:
+    type: object
+    properties:
+      searchCriteriaRequest:
+        $ref: '#/definitions/SearchCriteriaRequest'
+      searchRequest:
+        $ref: '#/definitions/SearchRequest'
+    title: ClientSearchRequest
+  ClientUpdateRequest:
+    type: object
+    properties:
+      docId:
+        type: string
+      properties:
+        type: array
+        items:
+          $ref: '#/definitions/Property'
+    title: ClientUpdateRequest
+  Criteria:
+    type: object
+    properties:
+      name:
+        type: string
+      operator:
+        type: string
+      values:
+        type: array
+        items:
+          type: string
+    title: Criteria
+  CriteriaMapping:
+    type: object
+    properties:
+      orderNumber:
+        type: integer
+        format: int32
+      propertyName:
+        type: string
+      propertyType:
+        type: string
+      propertyValue:
+        type: string
+    title: CriteriaMapping
+  DocumentBo:
+    type: object
+    properties:
+      docId:
+        type: string
+      properties:
+        type: array
+        items:
+          $ref: '#/definitions/Property'
+    title: DocumentBo
+  File:
+    type: object
+    properties:
+      absolute:
+        type: boolean
+      absoluteFile:
+        $ref: '#/definitions/File'
+      absolutePath:
+        type: string
+      canonicalFile:
+        $ref: '#/definitions/File'
+      canonicalPath:
+        type: string
+      directory:
+        type: boolean
+      executable:
+        type: boolean
+      file:
+        type: boolean
+      freeSpace:
+        type: integer
+        format: int64
+      hidden:
+        type: boolean
+      lastModified:
+        type: integer
+        format: int64
+      name:
+        type: string
+      parent:
+        type: string
+      parentFile:
+        $ref: '#/definitions/File'
+      path:
+        type: string
+      readable:
+        type: boolean
+      totalSpace:
+        type: integer
+        format: int64
+      usableSpace:
+        type: integer
+        format: int64
+      writable:
+        type: boolean
+    title: File
+  InputStream:
+    type: object
+    title: InputStream
+  ModelAndView:
+    type: object
+    properties:
+      empty:
+        type: boolean
+      model:
+        type: object
+      modelMap:
+        type: object
+        additionalProperties:
+          type: object
+      reference:
+        type: boolean
+      status:
+        type: string
+        enum:
+        - "100"
+        - "101"
+        - "102"
+        - "103"
+        - "200"
+        - "201"
+        - "202"
+        - "203"
+        - "204"
+        - "205"
+        - "206"
+        - "207"
+        - "208"
+        - "226"
+        - "300"
+        - "301"
+        - "302"
+        - "303"
+        - "304"
+        - "305"
+        - "307"
+        - "308"
+        - "400"
+        - "401"
+        - "402"
+        - "403"
+        - "404"
+        - "405"
+        - "406"
+        - "407"
+        - "408"
+        - "409"
+        - "410"
+        - "411"
+        - "412"
+        - "413"
+        - "414"
+        - "415"
+        - "416"
+        - "417"
+        - "418"
+        - "419"
+        - "420"
+        - "421"
+        - "422"
+        - "423"
+        - "424"
+        - "426"
+        - "428"
+        - "429"
+        - "431"
+        - "451"
+        - "500"
+        - "501"
+        - "502"
+        - "503"
+        - "504"
+        - "505"
+        - "506"
+        - "507"
+        - "508"
+        - "509"
+        - "510"
+        - "511"
+      view:
+        $ref: '#/definitions/View'
+      viewName:
+        type: string
+    title: ModelAndView
+  Property:
+    type: object
+    properties:
+      name:
+        type: string
+      type:
+        type: string
+      value:
+        type: object
+    title: Property
+  SearchCriteriaRequest:
+    type: object
+    properties:
+      criteria:
+        type: array
+        items:
+          $ref: '#/definitions/Criteria'
+      pageNumber:
+        type: integer
+        format: int32
+      pageSize:
+        type: integer
+        format: int32
+      properties:
+        type: array
+        items:
+          $ref: '#/definitions/SelectCriteria'
+    title: SearchCriteriaRequest
+  SearchInfosResponse:
+    type: object
+    properties:
+      currentPage:
+        type: integer
+        format: int32
+      pageSize:
+        type: integer
+        format: int32
+      totalItem:
+        type: integer
+        format: int32
+      totalPage:
+        type: integer
+        format: int32
+    title: SearchInfosResponse
+  SearchRequest:
+    type: object
+    properties:
+      pageNumber:
+        type: string
+      pageSize:
+        type: string
+      selectProperties:
+        type: array
+        items:
+          type: string
+      selectionCriteria:
+        $ref: '#/definitions/SelectionCriteria'
+      sort:
+        $ref: '#/definitions/Sort'
+      versionning:
+        type: string
+    title: SearchRequest
+  SelectCriteria:
+    type: object
+    properties:
+      ascending:
+        type: boolean
+      name:
+        type: string
+      sortOrder:
+        type: integer
+        format: int32
+    title: SelectCriteria
+  SelectionCriteria:
+    type: object
+    properties:
+      criteriaMapping:
+        type: array
+        items:
+          $ref: '#/definitions/CriteriaMapping'
+      query:
+        type: string
+    title: SelectionCriteria
+  Sort:
+    type: object
+    properties:
+      directionCd:
+        type: string
+      value:
+        type: string
+    title: Sort
+  URI:
+    type: object
+    properties:
+      absolute:
+        type: boolean
+      authority:
+        type: string
+      fragment:
+        type: string
+      host:
+        type: string
+      opaque:
+        type: boolean
+      path:
+        type: string
+      port:
+        type: integer
+        format: int32
+      query:
+        type: string
+      rawAuthority:
+        type: string
+      rawFragment:
+        type: string
+      rawPath:
+        type: string
+      rawQuery:
+        type: string
+      rawSchemeSpecificPart:
+        type: string
+      rawUserInfo:
+        type: string
+      scheme:
+        type: string
+      schemeSpecificPart:
+        type: string
+      userInfo:
+        type: string
+    title: URI
+  URL:
+    type: object
+    properties:
+      authority:
+        type: string
+      content:
+        type: object
+      defaultPort:
+        type: integer
+        format: int32
+      deserializedFields:
+        $ref: '#/definitions/URLStreamHandler'
+      file:
+        type: string
+      host:
+        type: string
+      path:
+        type: string
+      port:
+        type: integer
+        format: int32
+      protocol:
+        type: string
+      query:
+        type: string
+      ref:
+        type: string
+      serializedHashCode:
+        type: integer
+        format: int32
+      userInfo:
+        type: string
+    title: URL
+  URLStreamHandler:
+    type: object
+    title: URLStreamHandler
+  View:
+    type: object
+    properties:
+      contentType:
+        type: string
+    title: View
+x-ibm-configuration:
+  enforced: true
+  testable: true
+  phase: realized
+security:
+- api-key-1: []
+schemes:
+- https
+securityDefinitions:
+  api-key-1:
+    type: apiKey
+    description: ""
+    in: header
+    name: X-IBM-Client-Id
+x-ibm-endpoints:
+- endpointUrl: https://api-ti.bnc.ca/bnc/ti
+  type:
+  - development
+...
