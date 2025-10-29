@@ -47,6 +47,8 @@ public class HomeController {
         //System.out.println(oidcUser.getAttributes());
         //oidcUser.getAuthorities().forEach(authority -> System.out.println(authority.getAuthority()));
         //oidcUser.getClaims().forEach(oidcUserClaims::put);
+        System.out.println("Incoming request: HOME CONTROLLER : INDEX");
+        System.out.println("Incoming request: " + request.getRequestURI());
 
         model.addAttribute("Login",oidcUser.getEmail());
         //model.addAttribute("Login",oidcUser.getClaims().toString());
@@ -63,6 +65,7 @@ public class HomeController {
     String tabs(Model model) {
         return "tabs";
     }
+
     @GetMapping("/releve")
     String releve(Model model, Locale locale,
                   @AuthenticationPrincipal OidcUser oidcUser,
@@ -73,6 +76,8 @@ public class HomeController {
                   @RequestParam(value="Releve02",required=true,defaultValue = "") String releve02,
                   @RequestParam(value="Releve03",required=true,defaultValue = "") String releve03
                   ) {
+        System.out.println("Incoming request: HOME CONTROLLER : RELEVE");
+        System.out.println("Incoming request: " + request.getRequestURI());
         model.addAttribute("resultIsHidden",true);
         model.addAttribute("title","Titre releve");
         // Ajout aux liens "LANG" poour revenir vers la page actuelle
@@ -83,12 +88,16 @@ public class HomeController {
     String xmlgouv(Model model,HttpServletRequest request,
                    HttpServletResponse response,
                    HttpSession session) {
+        System.out.println("Incoming request: HOME CONTROLLER : XMLGOUV");
+        System.out.println("Incoming request: " + request.getRequestURI());
         return "xml";
     }
     @GetMapping("/facture")
     String facture(Model model,HttpServletRequest request,
                    HttpServletResponse response,
                    HttpSession session) {
+        System.out.println("Incoming request: HOME CONTROLLER : FACTURE");
+        System.out.println("Incoming request: " + request.getRequestURI());
         return "facture";
     }
 }

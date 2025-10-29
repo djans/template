@@ -1,17 +1,18 @@
 package com.bnc.spti.rbo.docs.invoker;
 
 import javax.net.ssl.SSLContext;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Form;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
+import ca.nbfg.rbo.config.SSL;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.HttpUrlConnectorProvider;
@@ -54,8 +55,6 @@ import com.bnc.spti.rbo.docs.invoker.auth.Authentication;
 import com.bnc.spti.rbo.docs.invoker.auth.HttpBasicAuth;
 import com.bnc.spti.rbo.docs.invoker.auth.ApiKeyAuth;
 import com.bnc.spti.rbo.docs.invoker.auth.OAuth;
-import com.bnc.spti.rbo.docs.invoker.ApiClient;
-import com.ibm.websphere.ssl.JSSEHelper;
 
 import ca.nbfg.rbo.config.LoggingBncJulTo4J;
 import ca.nbfg.rbo.config.PropertiesUtil;
@@ -546,7 +545,12 @@ public class ApiClient {
           File file = (File) param.getValue();
           FormDataContentDisposition contentDisp = FormDataContentDisposition.name(param.getKey())
               .fileName(file.getName()).size(file.length()).build();
-          multiPart.bodyPart(new FormDataBodyPart(contentDisp, file, MediaType.APPLICATION_OCTET_STREAM_TYPE));
+          //new
+          FormDataBodyPart f = new FormDataBodyPart(contentDisp, MediaType.APPLICATION_OCTET_STREAM_TYPE.getType());
+          multiPart.bodyPart(f);
+
+          //old
+          //multiPart.bodyPart(new FormDataBodyPart(contentDisp, file, MediaType.APPLICATION_OCTET_STREAM_TYPE));
         } else {
           FormDataContentDisposition contentDisp = FormDataContentDisposition.name(param.getKey()).build();
           multiPart.bodyPart(new FormDataBodyPart(contentDisp, parameterToString(param.getValue())));
@@ -771,19 +775,11 @@ public class ApiClient {
      * 07 Août 2019
      * Ajout de la définition des paramètres pour connexion SSL
      */
-    SSLContext ctx=null;
-    try { 
-    	JSSEHelper helper = JSSEHelper.getInstance();
-    	Properties props = helper.getProperties(PropertiesUtil.getProperty("rbo/doc/docs/sslsetting"));
-    	HashMap connectionInfo = new HashMap();
-    	connectionInfo.put(JSSEHelper.CONNECTION_INFO_DIRECTION,JSSEHelper.DIRECTION_OUTBOUND);
-    	connectionInfo.put(JSSEHelper.CONNECTION_INFO_REMOTE_HOST, PropertiesUtil.getProperty("rbo/doc/docs/sslsettinghost"));    	
-    	connectionInfo.put(JSSEHelper.CONNECTION_INFO_REMOTE_PORT,PropertiesUtil.getProperty("rbo/doc/docs/sslsettingport"));
-    	ctx= helper.getSSLContext(connectionInfo, props);
-    	  }
-    catch (com.ibm.websphere.ssl.SSLException e)
-    { 	
-    	e.printStackTrace(); 
+    SSLContext ctx= null ;
+    try {
+      ctx = SSL.createSSLContext();
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
     
 	/** Fin Ajout Daniel JANS+ */

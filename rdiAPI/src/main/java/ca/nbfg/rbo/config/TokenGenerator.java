@@ -26,7 +26,7 @@ public class TokenGenerator {
 	}
 
 
-	public String generateUserToken(ApiClient
+	public String generateUserToken(ApiClient client
 
 			, String code, String code_verifier) throws ApiException {
 		calUser = Calendar.getInstance();

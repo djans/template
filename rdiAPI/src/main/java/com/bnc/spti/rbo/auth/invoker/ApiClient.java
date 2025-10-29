@@ -1,16 +1,18 @@
 package com.bnc.spti.rbo.auth.invoker;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Form;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+//import javax.ws.rs.client.*;
+//import javax.ws.rs.core.Form;
+//import javax.ws.rs.core.GenericType;
+//import javax.ws.rs.core.MediaType;
+//import javax.ws.rs.core.Response;
+//import javax.ws.rs.core.Response.Status;
 
+import jakarta.ws.rs.client.*;
+import jakarta.ws.rs.core.*;
+import jakarta.ws.rs.core.Response.Status;
+
+
+import ca.nbfg.rbo.config.SSL;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.HttpUrlConnectorProvider;
@@ -24,8 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.net.ssl.SSLContext;
-import com.ibm.websphere.ssl.JSSEHelper;
-import com.ibm.websphere.ssl.SSLException;
+
 
 import ca.nbfg.rbo.config.LoggingBncJulTo4J;
 import ca.nbfg.rbo.config.PropertiesUtil;
@@ -60,11 +61,11 @@ import com.bnc.spti.rbo.auth.invoker.auth.Authentication;
 import com.bnc.spti.rbo.auth.invoker.auth.HttpBasicAuth;
 import com.bnc.spti.rbo.auth.invoker.auth.ApiKeyAuth;
 import com.bnc.spti.rbo.auth.invoker.auth.OAuth;
-import com.ibm.websphere.ssl.JSSEHelper;
 
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2018-11-22T11:03:19.343-05:00")
 public class ApiClient {
+
 	protected Map<String, String> defaultHeaderMap = new HashMap<String, String>();
 	/** Modification Daniel JANS
 	 * 28 Novembre 2018
@@ -88,13 +89,18 @@ public class ApiClient {
 	protected DateFormat dateFormat;
 
 	public ApiClient() {
+		System.out.println("ApiClient constructor");
 		json = new JSON();
+		System.out.println("ApiClient constructor2");
 		httpClient = buildHttpClient(debugging);
+		System.out.println("ApiClient constructor3");
 
 		this.dateFormat = new RFC3339DateFormat();
+		System.out.println("ApiClient constructor4");
 
 		// Set default User-Agent.
 		setUserAgent("Swagger-Codegen/1.0.0-SNAPSHOT/java");
+		System.out.println("ApiClient constructor5");
 
 		// Setup authentications (key: authentication name, value: authentication).
 		authentications = new HashMap<String, Authentication>();
@@ -102,6 +108,7 @@ public class ApiClient {
 		authentications.put("clientIdHeader", new ApiKeyAuth("header", "X-IBM-Client-Id"));
 		// Prevent the authentications from being modified.
 		authentications = Collections.unmodifiableMap(authentications);
+		System.out.println("ApiClient constructor6");
 	}
 
 	/**
@@ -848,20 +855,12 @@ public class ApiClient {
      * 28 Novembre 2018
      * Ajout de la définition des paramètres pour connexion SSL
      */
-    SSLContext ctx=null;
-    try { 
-    	JSSEHelper helper = JSSEHelper.getInstance();
-    	Properties props = helper.getProperties(PropertiesUtil.getProperty("rbo/doc/token/sslsetting"));
-    	HashMap connectionInfo = new HashMap();
-    	connectionInfo.put(JSSEHelper.CONNECTION_INFO_DIRECTION,JSSEHelper.DIRECTION_OUTBOUND);
-    	connectionInfo.put(JSSEHelper.CONNECTION_INFO_REMOTE_HOST, PropertiesUtil.getProperty("rbo/doc/token/sslsettinghost"));    	
-    	connectionInfo.put(JSSEHelper.CONNECTION_INFO_REMOTE_PORT,PropertiesUtil.getProperty("rbo/doc/token/sslsettingport"));
-    	ctx= helper.getSSLContext(connectionInfo, props);    	
-    }
-    catch (com.ibm.websphere.ssl.SSLException e)
-    { 	
-    	e.printStackTrace(); 
-    }
+	  SSLContext ctx= null ;
+	  try {
+		  ctx = SSL.createSSLContext();
+	  } catch (Exception e) {
+		  throw new RuntimeException(e);
+	  }
     
 	/** Fin Ajout Daniel JANS+ */
 	if(debugging)

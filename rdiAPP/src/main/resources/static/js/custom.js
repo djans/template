@@ -3,28 +3,32 @@
 //////////////////////////////////////////////////////////
 document.addEventListener('DOMContentLoaded', function() {
     const dateInput = document.getElementById('DateDebut');
-    const today = new Date();
+    if(dateInput!=null) {
+        const today = new Date();
 
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed, add 1, then pad
-    const day = String(today.getDate()).padStart(2, '0'); // Pad day
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed, add 1, then pad
+        const day = String(today.getDate()).padStart(2, '0'); // Pad day
 
-    const formattedDate = `${year}-${month}-${day}`;
-    dateInput.value = formattedDate;
+        const formattedDate = `${year}-${month}-${day}`;
+        dateInput.value = formattedDate;
+    }
 });
 //////////////////////////////////////////////////////////
 // DATE DE FIN PAR DEFAUT
 //////////////////////////////////////////////////////////
 document.addEventListener('DOMContentLoaded', function() {
     const dateInput = document.getElementById('DateFin');
-    const today = new Date();
+    if(dateInput!=null) {
+        const today = new Date();
 
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed, add 1, then pad
-    const day = String(today.getDate()).padStart(2, '0'); // Pad day
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed, add 1, then pad
+        const day = String(today.getDate()).padStart(2, '0'); // Pad day
 
-    const formattedDate = `${year}-${month}-${day}`;
-    dateInput.value = formattedDate;
+        const formattedDate = `${year}-${month}-${day}`;
+        dateInput.value = formattedDate;
+    }
 });
 //////////////////////////////////////////////////////////
 // CHANGEMENT DE COURTIER - CHANGEMENT DE TYPE DE DOCUMENT

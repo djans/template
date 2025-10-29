@@ -5,7 +5,8 @@ import com.bnc.spti.rbo.docs.invoker.ApiClient;
 import com.bnc.spti.rbo.docs.invoker.Configuration;
 import com.bnc.spti.rbo.docs.invoker.Pair;
 
-import javax.ws.rs.core.GenericType;
+//import javax.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.GenericType;
 
 import com.bnc.spti.rbo.docs.model.Document;
 import com.bnc.spti.rbo.docs.model.Error;
