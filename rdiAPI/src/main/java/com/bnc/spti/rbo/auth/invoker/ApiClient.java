@@ -17,10 +17,7 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.HttpUrlConnectorProvider;
 import org.glassfish.jersey.jackson.JacksonFeature;
-import org.glassfish.jersey.media.multipart.FormDataBodyPart;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.MultiPart;
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.glassfish.jersey.media.multipart.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -608,8 +605,11 @@ public class ApiClient {
 					File file = (File) param.getValue();
 					FormDataContentDisposition contentDisp = FormDataContentDisposition.name(param.getKey())
 							.fileName(file.getName()).size(file.length()).build();
-					multiPart
-							.bodyPart(new FormDataBodyPart(contentDisp, file, MediaType.APPLICATION_OCTET_STREAM_TYPE));
+					BodyPart filePart = new BodyPart(file, MediaType.APPLICATION_OCTET_STREAM_TYPE);
+					filePart.setContentDisposition(contentDisp);
+					multiPart.bodyPart(filePart);
+					//multiPart
+					//		.bodyPart(new FormDataBodyPart(contentDisp, file, MediaType.APPLICATION_OCTET_STREAM_TYPE));
 				} else {
 					FormDataContentDisposition contentDisp = FormDataContentDisposition.name(param.getKey()).build();
 					multiPart.bodyPart(new FormDataBodyPart(contentDisp, parameterToString(param.getValue())));

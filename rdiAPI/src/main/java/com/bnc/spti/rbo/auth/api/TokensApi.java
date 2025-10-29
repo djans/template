@@ -5,7 +5,7 @@ import com.bnc.spti.rbo.auth.invoker.ApiClient;
 import com.bnc.spti.rbo.auth.invoker.Configuration;
 import com.bnc.spti.rbo.auth.invoker.Pair;
 
-import javax.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.GenericType;
 
 import org.apache.commons.codec.binary.Base64;
 

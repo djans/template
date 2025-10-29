@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.*;
 
 import java.text.DateFormat;
 
-import javax.ws.rs.ext.ContextResolver;
+import jakarta.ws.rs.ext.ContextResolver;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2019-03-05T16:39:48.642-05:00")
 public class JSON implements ContextResolver<ObjectMapper> {
