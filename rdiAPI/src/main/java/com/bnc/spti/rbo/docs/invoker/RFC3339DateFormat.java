@@ -12,20 +12,24 @@
 
 package com.bnc.spti.rbo.docs.invoker;
 
-import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
-import com.fasterxml.jackson.databind.util.ISO8601Utils;
-
+import com.fasterxml.jackson.databind.util.StdDateFormat;
 import java.text.FieldPosition;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 
-public class RFC3339DateFormat extends ISO8601DateFormat {
+public class RFC3339DateFormat extends StdDateFormat  {
+
+  private static final DateTimeFormatter RFC_3339_FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
   // Same as ISO8601DateFormat but serializing milliseconds.
   @Override
   public StringBuffer format(Date date, StringBuffer toAppendTo, FieldPosition fieldPosition) {
-    String value = ISO8601Utils.format(date, true);
-    toAppendTo.append(value);
+    String formatted = OffsetDateTime.ofInstant(date.toInstant(), ZoneOffset.UTC)
+            .format(RFC_3339_FORMATTER);
+    toAppendTo.append(formatted);
     return toAppendTo;
   }
 
