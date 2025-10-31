@@ -26,20 +26,23 @@ public class TokenGenerator {
 	}
 
 
-	public String generateUserToken(ApiClient client
+	public String ygenerateUserToken(ApiClient client
 
 			, String code, String code_verifier) throws ApiException {
+		logger.debug("GENERATING A USER TOKEN");
 		calUser = Calendar.getInstance();
 		String resultToken = new String();
 		IamxTokenRequest tokenRequest = new IamxTokenRequest();
-		tokenRequest.setClientId(PropertiesUtil.getProperty("rbo/token/user/clientid"));
+		tokenRequest.setClientId(new PropertiesUtil().getProperty("clientid"));
 		tokenRequest.setCode(code);
-		tokenRequest.setGrantType(PropertiesUtil.getProperty("rbo/token/user/granttype"));
+		tokenRequest.setGrantType(new PropertiesUtil().getProperty("granttype"));
 //		tokenRequest.setScope(scope);
 		tokenRequest.setCodeVerifier(code_verifier);
 //		logger.debug(tokenRequest.toString());
 		TokensApi tokensApi = new TokensApi(client);
+		logger.debug("CREATING A TOKEN REQUEST. START");
 		IamxTokenResponse iamxTokenResponse = tokensApi.createToken(tokenRequest);
+		logger.debug("CREATING A TOKEN REQUEST. END");
 		String tokenUser = iamxTokenResponse.getAccessToken();
 		String newexpiration = iamxTokenResponse.getExpiresIn();
 		int toAdd = new Integer(newexpiration).intValue();

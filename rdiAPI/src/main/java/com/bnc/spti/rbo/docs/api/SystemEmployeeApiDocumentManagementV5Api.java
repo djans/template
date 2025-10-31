@@ -140,7 +140,7 @@ if (metadata != null)
      * Ajout par Daniel JANS 
      * 07 Août 2019
      */
-    String ibmid = PropertiesUtil.getProperty("rbo/doc/docs/xibmclientid");
+    String ibmid = new PropertiesUtil().getProperty("xibmclientid");
     localVarHeaderParams.put("x-ibm-client-id",ibmid); 
     /**
      * Fin de l'ajout
@@ -205,7 +205,7 @@ if (metadata != null)
      * Ajout par Daniel JANS 
      * 07 Août 2019
      */
-    String ibmid = PropertiesUtil.getProperty("rbo/doc/docs/xibmclientid");
+    String ibmid = new PropertiesUtil().getProperty("xibmclientid");
     localVarHeaderParams.put("x-ibm-client-id",ibmid); 
     /**
      * Fin de l'ajout

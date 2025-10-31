@@ -117,7 +117,7 @@ public class TokensApi {
      */
     localVarFormParams.put("grant_type",iamxTokenRequest.getGrantType());
 //    localVarFormParams.put("scope",iamxTokenRequest.getScope());
-    localVarFormParams.put("redirect_uri", PropertiesUtil.getProperty("rbo/token/user/redirecturi"));
+    localVarFormParams.put("redirect_uri", new PropertiesUtil().getProperty("redirecturi"));
     localVarFormParams.put("client_id",iamxTokenRequest.getClientId());
     localVarFormParams.put("code",iamxTokenRequest.getCode());
     localVarFormParams.put("code_verifier",iamxTokenRequest.getCodeVerifier());

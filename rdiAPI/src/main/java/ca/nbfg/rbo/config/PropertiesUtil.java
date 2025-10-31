@@ -3,8 +3,11 @@ package ca.nbfg.rbo.config;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import com.bnc.spti.rbo.auth.api.*;
 import com.bnc.spti.rbo.auth.invoker.*;
@@ -20,22 +23,28 @@ public class PropertiesUtil {
 	static String nodeName;
 	public static Logger logger = LoggerFactory.getLogger(PropertiesUtil.class);
 
-	public static String getProperty(String jndi) {		
+	public String getProperty(String jndi) {
 		returnedJndiString= null;
 
 		if (entries.containsKey(jndi)) {
 			return entries.get(jndi);
 		} else {
 			try {
-				logger.debug("JNDI RECHERCHE: " + jndi);
-				InitialContext ctx = new InitialContext();
-				returnedJndiString = (String) ctx.lookup("cell/persistent/"+jndi);
+				logger.debug("PROPERTY RECHERCHE: " + jndi);
+//				InitialContext ctx = new InitialContext();
+//				returnedJndiString = (String) ctx.lookup("cell/persistent/"+jndi);
+				String oktaProp = "okta.properties";
+				InputStream oktaInputStream = getClass().getClassLoader().getResourceAsStream(oktaProp);
+				Properties prop = new Properties();
+				prop.load(oktaInputStream);
+				returnedJndiString=prop.getProperty(jndi);
 				entries.put(jndi, returnedJndiString);
-				logger.debug("JNDI VALEUR ; " + jndi + " = " + returnedJndiString);
-			} catch (NamingException e) {
+				logger.debug("PROPERTY VALEUR ; " + jndi + " = " + returnedJndiString);
+			} catch (IOException e) {
 				e.printStackTrace();
-			}
-			return returnedJndiString;
+                throw new RuntimeException(e);
+            }
+            return returnedJndiString;
 		}
 	}
 }

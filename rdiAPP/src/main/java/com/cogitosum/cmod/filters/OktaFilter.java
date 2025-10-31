@@ -32,10 +32,12 @@ public class OktaFilter implements Filter {
         HttpServletResponse resp = (HttpServletResponse) servletResponse;
         HttpSession session =  req.getSession();
         if (req.getParameter("code") != null && session.getAttribute("code") == null ) {
+            logger.debug("GETTING A CODE");
             String token =this.getJwtToken(req.getParameter("code"));
             session.setAttribute("token", req.getParameter("token"));
         filterChain.doFilter(req, resp);
         } else if(session.getAttribute("code") == null){
+            logger.debug("BEING REDIRECTED");
             HttpServletResponse res = (HttpServletResponse) resp;
             res.sendRedirect("https://trial-4877959.okta.com/oauth2/v1/authorize?client_id=0oawbjp7n3GIrOihx697&response_type=code&scope=openid&redirect_uri=https%3A%2F%2Faurora.cogitosum.com%2F&state=state-296bc9a0-a2a2-4a57-be1a-d0e2fd9bb601");
         }
@@ -46,16 +48,19 @@ public class OktaFilter implements Filter {
         apiclient.setBasePath("https://trial-4877959.okta.com/oauth2/v1");
         apiclient.setDebugging(true);
         TokenGenerator tokengenerator = new TokenGenerator();
+        logger.debug("GETTING A JWTTOKEN");
         try {
             token= tokengenerator.generateUserToken(apiclient,code,this.createCodeVerifier());
             logger.debug("Token generated: " + token);
         } catch (ApiException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
         return token;
     }
 
     private String createCodeVerifier(){
+        logger.debug("CREATING A CODE VERIFIER");
         final String AB="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         SecureRandom secureRandom = new SecureRandom();
         StringBuilder sb = new StringBuilder(64);
@@ -68,6 +73,7 @@ public class OktaFilter implements Filter {
     }
 
     private String createChallenge(String codeVerifier) {
+        logger.debug("CREATING A CHALLENGE");
         MessageDigest md;
         String challenge = null;
         try {

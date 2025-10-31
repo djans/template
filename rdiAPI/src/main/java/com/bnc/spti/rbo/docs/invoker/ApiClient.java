@@ -777,7 +777,8 @@ public class ApiClient {
      */
     SSLContext ctx= null ;
     try {
-      ctx = SSL.createSSLContext();
+      SSL ssl = new SSL();
+      ctx = ssl.createSSLContext();
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

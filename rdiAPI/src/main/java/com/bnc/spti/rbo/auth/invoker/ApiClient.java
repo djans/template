@@ -86,18 +86,14 @@ public class ApiClient {
 	protected DateFormat dateFormat;
 
 	public ApiClient() {
-		System.out.println("ApiClient constructor");
+
 		json = new JSON();
-		System.out.println("ApiClient constructor2");
 		httpClient = buildHttpClient(debugging);
-		System.out.println("ApiClient constructor3");
 
 		this.dateFormat = new RFC3339DateFormat();
-		System.out.println("ApiClient constructor4");
 
 		// Set default User-Agent.
 		setUserAgent("Swagger-Codegen/1.0.0-SNAPSHOT/java");
-		System.out.println("ApiClient constructor5");
 
 		// Setup authentications (key: authentication name, value: authentication).
 		authentications = new HashMap<String, Authentication>();
@@ -105,7 +101,6 @@ public class ApiClient {
 		authentications.put("clientIdHeader", new ApiKeyAuth("header", "X-IBM-Client-Id"));
 		// Prevent the authentications from being modified.
 		authentications = Collections.unmodifiableMap(authentications);
-		System.out.println("ApiClient constructor6");
 	}
 
 	/**
@@ -857,7 +852,8 @@ public class ApiClient {
      */
 	  SSLContext ctx= null ;
 	  try {
-		  ctx = SSL.createSSLContext();
+		  SSL ssl = new SSL();
+		  ctx = ssl.createSSLContext();
 	  } catch (Exception e) {
 		  throw new RuntimeException(e);
 	  }
