@@ -26,7 +26,7 @@ public class TokenGenerator {
 	}
 
 
-	public String ygenerateUserToken(ApiClient client
+	public String generateUserToken(ApiClient client
 
 			, String code, String code_verifier) throws ApiException {
 		logger.debug("GENERATING A USER TOKEN");
