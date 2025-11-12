@@ -1,21 +1,16 @@
-package com.cogitosum.cmod.filters;
+package com.cogitosum.cmod.helper;
 
 import ca.nbfg.rbo.config.TokenGenerator;
 import com.bnc.spti.rbo.auth.invoker.ApiClient;
 import com.bnc.spti.rbo.auth.invoker.ApiException;
-import jakarta.servlet.*;
+import com.cogitosum.cmod.filters.OktaFilter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
-import org.springframework.core.annotation.Order;
-import org.springframework.boot.web.servlet.FilterRegistration;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -24,44 +19,27 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
 
-//@Component
-//@Order(1)
-//@FilterRegistration(urlPatterns = "/*")
-public class OktaFilter extends  OncePerRequestFilter {
-    Logger logger = LoggerFactory.getLogger(OktaFilter.class);
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+public class OktaStatus {
+    Logger logger = LoggerFactory.getLogger(OktaStatus.class);
 
+    public void checkStatus(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String path = request.getRequestURI();
-
-        // Skip static resources
-        if (path.endsWith(".ico") || path.endsWith(".css") || path.endsWith(".js") || path.contains("/static/")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        // Logging authenticated data
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//
-//        if (authentication != null && authentication.isAuthenticated()) {
-//            logger.debug("User: " + authentication.getPrincipal().toString());
-//            authentication.getAuthorities().forEach(auth -> {
-//                logger.debug("Role/Authority: " + auth.getAuthority());
-//            });
-//        }
+        String status=null;
         // Handling the request for code/jwt token
         HttpSession session =  request.getSession();
         if (request.getParameter("code") != null && session.getAttribute("token") == null ) {
-            logger.debug("GETTING A CODE");
+            logger.debug("GETTING A TOKEN");
             String token =this.getJwtToken(request);
             session.setAttribute("token", token);
-        filterChain.doFilter(request, response);
-        } else if(session.getAttribute("token") == null){
+        }else if(session.getAttribute("token") == null){
+            logger.debug("GETTING A CODE");
             // Creation code_verifer and challenge. Adding code_verifier to the session when client comes back
             String code_verifier = this.createCodeVerifier();
             request.getSession().setAttribute("code_verifier", code_verifier);
             String challenge = this.createChallenge(code_verifier);
-            logger.debug("BEING REDIRECTED");
             response.sendRedirect("https://trial-4720571.okta.com/oauth2/ausx9881y2wfrfUSX697/v1/authorize?client_id=0oaxa7vyyifeUn7N3697&response_type=code&scope=Role01&redirect_uri=https%3A%2F%2Faurora.cogitosum.com%2F&state=state-296bc9a0-a2a2-4a57-be1a-d0e2fd9bb601&code_challenge_method=S256&code_challenge="+challenge);
+        } else {
+            logger.debug("ALREADY LOGGED IN OKTA");
         }
     }
 
@@ -116,6 +94,4 @@ public class OktaFilter extends  OncePerRequestFilter {
         logger.debug("CHALLENGE: " + challenge);
         return challenge;
     }
-
-
 }

@@ -1,6 +1,8 @@
 package com.cogitosum.cmod.models;
 
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 public class Document {
     @NotBlank(message = "Courtier est obligatoire")

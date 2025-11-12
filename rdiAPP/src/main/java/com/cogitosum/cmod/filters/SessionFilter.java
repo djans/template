@@ -33,15 +33,7 @@ public class SessionFilter extends OncePerRequestFilter {
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication != null && authentication.isAuthenticated()) {
-            System.out.println("User: " + authentication.getName());
-            authentication.getAuthorities().forEach(auth -> {
-                System.out.println("Role/Authority: " + auth.getAuthority());
-            });
-        }
-        System.out.println("Incoming request: " + request.getRequestURI());
         HttpSession session = request.getSession();
             chain.doFilter(request, response);
         

@@ -74,48 +74,64 @@ const soustypedocumentparcourtier = {
 };
 
 document.addEventListener('change', function(event) {
+    console.log("CALLED BY DOCUMENT.ADDLISTENER");
+    updateDocumentFields(event.target.id,event.target.value,"live");
+});
+
+function updateDocumentFields(triggerId,triggerValue,triggerEvent){
+    console.log("TRIGGERED "+triggerId+" "+triggerValue);
     // Champ à mettre à jour
-    const TypeDocument = document.getElementById('TypeDocument');
-    const SousTypeDocument = document.getElementById('SousTypeDocument');
-    // Valeur choisie
-    const selectedCategory = this.value;
+    const ElementTypeDocumentValue = document.getElementById('TypeDocument').value;
+    const ElementSousTypeDocument = document.getElementById('SousTypeDocument').value;
+    const urlParams = new URLSearchParams(window.location.search);
+
     // Mise à zéro du type de document. Espace est requis sinon erreur
 
     // Construction de la liste de type de documents selon le courtier choisi
-    if(event.target.id === 'Courtier') {
+    if(triggerId === 'Courtier') {
         TypeDocument.innerHTML = '<option value=""> </option>';
-        const listtypedocumentcourtier = "C"+event.target.value;
+        const listtypedocumentcourtier = "C"+triggerValue;
         const listtypedocuments=typedocumentparcourtier[listtypedocumentcourtier];
-        if (listtypedocuments.length > 0) {
-            listtypedocuments.forEach(element => {
-                const option = document.createElement("option");
-                option.textContent = element.split("#")[1];
-                option.value = element.split("#")[0];
-                TypeDocument.appendChild(option);
-            })
+        if (listtypedocuments!=null) {
+            if (listtypedocuments.length > 0) {
+                listtypedocuments.forEach(element => {
+                    const option = document.createElement("option");
+                    option.textContent = element.split("#")[1];
+                    option.value = element.split("#")[0];
+                    TypeDocument.appendChild(option);
+                })
+            }
+            if(triggerEvent==="reload") {
+                TypeDocument.value = ElementTypeDocumentValue;
+            }
         }
         // MONTRER TYPE DE DOCUMENT ET NUMERO DE COMPTE SI COURTIER !=""
-        if (event.target.value !== '') {
+        if (triggerValue !== '') {
             document.getElementById("ligneTypeDocument").style.display = '';
             document.getElementById("ligneNumeroCompte").style.display = '';
         }
     }
 
     // Construction de la liste de sous type de documents selon le type de document choisi
-    if(event.target.id === 'TypeDocument') {
+    if(triggerId === 'TypeDocument') {
         SousTypeDocument.innerHTML = '<option value=""> </option>';
-        const listsoustypedocumentcourtier = "C"+document.getElementById("Courtier").value+event.target.value;
+        const listsoustypedocumentcourtier = "C"+document.getElementById("Courtier").value+triggerValue;
         const listsoustypedocuments=soustypedocumentparcourtier[listsoustypedocumentcourtier];
-        if (listsoustypedocuments.length > 0) {
-            listsoustypedocuments.forEach(element => {
-                const option = document.createElement("option");
-                option.textContent = element.split("#")[1];
-                option.value = element.split("#")[0];
-                SousTypeDocument.appendChild(option);
-            })
+        if(listsoustypedocuments!=null) {
+            if (listsoustypedocuments.length > 0) {
+                listsoustypedocuments.forEach(element => {
+                    const option = document.createElement("option");
+                    option.textContent = element.split("#")[1];
+                    option.value = element.split("#")[0];
+                    SousTypeDocument.appendChild(option);
+                })
+            }
+            SousTypeDocument.value = ElementSousTypeDocument;
         }
     }
-});
+
+}
+
 //////////////////////////////////////////////////////////
 // REGLE DE HIDE/WHEN
 // MONTRER SI LA COMBINAISON "COURTIER#TYPE DE DOCUMENT"
@@ -233,3 +249,22 @@ document.addEventListener('change', function(event) {
         }
     }
 })
+
+window.addEventListener('DOMContentLoaded', function (event) {
+    console.log("CALLED BY WINDOW.ADDLISTENER");
+    const courtierSelect = document.getElementById('Courtier');
+    if (courtierSelect) {
+        updateDocumentFields(courtierSelect.id, courtierSelect.value,"reload");
+    }
+    const typeDocumentSelect = document.getElementById('TypeDocument');
+    if (typeDocumentSelect) {
+        updateDocumentFields(typeDocumentSelect.id, typeDocumentSelect.value);
+    }
+    const sTypeDocumentSelect = document.getElementById('SousTypeDocument');
+    if (false) {
+        sTypeDocumentSelect.dispatchEvent(new Event('change'));
+    }
+});
+
+
+

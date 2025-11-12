@@ -21,12 +21,13 @@ public class PropertiesUtil {
 	public static Map<String, String> entries= new HashMap<String, String>();
 	static String returnedJndiString;
 	static String nodeName;
-	public static Logger logger = LoggerFactory.getLogger(PropertiesUtil.class);
+	Logger logger = LoggerFactory.getLogger(PropertiesUtil.class);
 
 	public String getProperty(String jndi) {
 		returnedJndiString= null;
 
 		if (entries.containsKey(jndi)) {
+			logger.debug("PROPERTY FOUND IN THE CACHE: " + jndi);
 			return entries.get(jndi);
 		} else {
 			try {

@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Calendar;
 
 public class TokenGenerator {
-	public static Logger logger = LoggerFactory.getLogger(TokenGenerator.class);
+	Logger logger = LoggerFactory.getLogger(TokenGenerator.class);
 
 	public static Calendar timeOut;
 	public static String token;
@@ -27,7 +27,6 @@ public class TokenGenerator {
 
 
 	public String generateUserToken(ApiClient client
-
 			, String code, String code_verifier) throws ApiException {
 		logger.debug("GENERATING A USER TOKEN");
 		calUser = Calendar.getInstance();
@@ -58,7 +57,7 @@ public class TokenGenerator {
 		TokenGenerator.token = null;
 	}
 
-	public static boolean timeToRefresh(Calendar dt) {
+	public boolean timeToRefresh(Calendar dt) {
 		if (TokenGenerator.timeOut == null || TokenGenerator.token == null) {
 			return true;
 		} else if (dt.after(timeOut)) {

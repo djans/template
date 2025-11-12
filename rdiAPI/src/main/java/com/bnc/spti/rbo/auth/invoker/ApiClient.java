@@ -781,6 +781,7 @@ public class ApiClient {
 		}
 
 		Entity<?> entity = serialize(body, formParams, contentType);
+		System.out.println(entity.toString());
 
 		Response response = null;
 
