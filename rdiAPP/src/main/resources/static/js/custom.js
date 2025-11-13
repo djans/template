@@ -75,10 +75,10 @@ const soustypedocumentparcourtier = {
 
 document.addEventListener('change', function(event) {
     console.log("CALLED BY DOCUMENT.ADDLISTENER");
-    updateDocumentFields(event.target.id,event.target.value,"live");
+    updateDocumentFields(event.target.id,event.target.value,"live",event);
 });
 
-function updateDocumentFields(triggerId,triggerValue,triggerEvent){
+function updateDocumentFields(triggerId,triggerValue,triggerEvent,event){
     console.log("TRIGGERED "+triggerId+" "+triggerValue);
     // Champ à mettre à jour
     const ElementTypeDocumentValue = document.getElementById('TypeDocument').value;
@@ -106,10 +106,10 @@ function updateDocumentFields(triggerId,triggerValue,triggerEvent){
             }
         }
         // MONTRER TYPE DE DOCUMENT ET NUMERO DE COMPTE SI COURTIER !=""
-        if (triggerValue !== '') {
-            document.getElementById("ligneTypeDocument").style.display = '';
-            document.getElementById("ligneNumeroCompte").style.display = '';
-        }
+        //if (triggerValue !== '') {
+        //    document.getElementById("ligneTypeDocument").style.display = '';
+        //    document.getElementById("ligneNumeroCompte").style.display = '';
+        //}
     }
 
     // Construction de la liste de sous type de documents selon le type de document choisi
@@ -126,10 +126,17 @@ function updateDocumentFields(triggerId,triggerValue,triggerEvent){
                     SousTypeDocument.appendChild(option);
                 })
             }
-            SousTypeDocument.value = ElementSousTypeDocument;
+            if(triggerEvent==="reload") {
+                SousTypeDocument.value = ElementSousTypeDocument;
+            }
         }
+        // MONTRER TYPE DE DOCUMENT ET NUMERO DE COMPTE SI COURTIER !=""
+        //if (triggerValue !== '') {
+        //    document.getElementById("ligneSousTypeDocument").style.display = '';
+        //    document.getElementById("ligneNumeroCompte").style.display = '';
+       // }
     }
-
+    updateUI(triggerEvent,event);
 }
 
 //////////////////////////////////////////////////////////
@@ -186,85 +193,100 @@ HIDE_CODE_PRODUIT_FIELD = ruleshide['CODE_PRODUIT_FIELD_TAXSTM']
     .concat(ruleshide['CODE_PRODUIT_FIELD_NOTIF']);
 
 document.addEventListener('change', function(event) {
-    if(event.target.id === 'TypeDocument'|| event.target.id ==='Courtier') {
-        const courtier = document.getElementById('Courtier').value;
-        const TypeDocument = document.getElementById('TypeDocument').value;
-        const concatCourtierTypeDocument = courtier + "#" + TypeDocument;
-        // REGLE CHAMP SOUS-TYPE DE DOCUMENT
-        if (!HIDE_SOUS_TYPE_FIELD.includes(concatCourtierTypeDocument)) {
-            document.getElementById('SousTypeDocument').value='';
-            document.getElementById('ligneSousTypeDocument').style.display='none';
-        } else {
-            document.getElementById('SousTypeDocument').value='';
-            document.getElementById('ligneSousTypeDocument').removeAttribute('style');
-        }
-        // REGLE CHAMP DATE DEBUT ET FIN
-        if (!HIDE_DATES_DEBUT_FIN_FIELD.includes(concatCourtierTypeDocument)) {
-            document.getElementById('DateDebut').value='';
-            document.getElementById('ligneDateDebut').style.display='none';
-            document.getElementById('DateFin').value='';
-            document.getElementById('ligneDateFin').style.display='none';
-        } else {
-            document.getElementById('DateDebut').value=new Date().toISOString().split('T')[0];;
-            document.getElementById('DateFin').value=new Date().toISOString().split('T')[0];;
-            document.getElementById('ligneDateDebut').removeAttribute('style');
-            document.getElementById('ligneDateFin').removeAttribute('style');
-        }
-        // REGLE CHAMP ANNE FISCALE
-        if (!HIDE_DATE_FISCALE_FIELD.includes(concatCourtierTypeDocument)) {
-            document.getElementById('AnneeFiscale').value='';
-            document.getElementById('ligneAnneeFiscale').style.display='none';
-        } else {
-            document.getElementById('AnneeFiscale').value=new Date().getFullYear();
-            document.getElementById('ligneAnneeFiscale').removeAttribute('style');
-        }
-        // REGLE CHAMP OPERATION
-        if (!HIDE_OPERATIONS_FIELD.includes(concatCourtierTypeDocument)) {
-            document.getElementById('Operation').value='';
-            document.getElementById('ligneOperation').style.display='none';
-        } else {
-            document.getElementById('Operation').value='';
-            document.getElementById('ligneOperation').removeAttribute('style');
-        }
-        // REGLE CHAMP CODE PROUIT
-        if (!HIDE_CODE_PRODUIT_FIELD.includes(concatCourtierTypeDocument)) {
-            document.getElementById('Codeproduit').value='';
-            document.getElementById('ligneCodeProduit').style.display='none';
-        } else {
-            document.getElementById('Codeproduit').value='';
-            document.getElementById('ligneCodeProduit').removeAttribute('style');
-        }
-        // GESTION DES EXCEPTIONS
-        if(
-            document.getElementById('Courtier').value==='7947'
-            && document.getElementById('TypeDocument').value==='PRTFSTM'
-            && document.getElementById('SousTypeDocument').value==='CCAR' ){
-                document.getElementById('DateDebut').value='';
-                document.getElementById('ligneDateDebut').style.display='none';
-                document.getElementById('DateFin').value='';
-                document.getElementById('ligneDateFin').style.display='none';
-                document.getElementById('ligneAnneFiscale').removeAttribute('style');
-                document.getElementById('ligneAnneeFiscale').value=new Date().getFullYear();
+    updateUI("live",event);
+})
 
+function updateUI(triggerEvent, event){
+    if(event.target.id === 'TypeDocument'|| event.target.id ==='Courtier') {
+        if (event.target.id === 'Courtier') {
+            // MONTRER TYPE DE DOCUMENT ET NUMERO DE COMPTE SI COURTIER !=""
+            document.getElementById("ligneTypeDocument").style.display = '';
+            document.getElementById("ligneNumeroCompte").style.display = '';
+            document.getElementById("ligneSousTypeDocument").style.display = 'none';
+            document.getElementById("ligneAnneeFiscale").style.display = 'none';
+            document.getElementById("ligneOperation").style.display = 'none';
+            document.getElementById("ligneCodeProduit").style.display = 'none';
+            document.getElementById("ligneDateDebut").style.display = 'none';
+            document.getElementById("ligneDateFin").style.display = 'none';
+
+        } else {
+            const courtier = document.getElementById('Courtier').value;
+            const TypeDocument = document.getElementById('TypeDocument').value;
+            const concatCourtierTypeDocument = courtier + "#" + TypeDocument;
+            // REGLE CHAMP SOUS-TYPE DE DOCUMENT
+            if (!HIDE_SOUS_TYPE_FIELD.includes(concatCourtierTypeDocument)) {
+                document.getElementById('SousTypeDocument').value = '';
+                document.getElementById('ligneSousTypeDocument').style.display = 'none';
+            } else {
+                document.getElementById('SousTypeDocument').value = '';
+                document.getElementById('ligneSousTypeDocument').removeAttribute('style');
+            }
+            // REGLE CHAMP DATE DEBUT ET FIN
+            if (!HIDE_DATES_DEBUT_FIN_FIELD.includes(concatCourtierTypeDocument)) {
+                document.getElementById('DateDebut').value = '';
+                document.getElementById('ligneDateDebut').style.display = 'none';
+                document.getElementById('DateFin').value = '';
+                document.getElementById('ligneDateFin').style.display = 'none';
+            } else {
+                document.getElementById('DateDebut').value = new Date().toISOString().split('T')[0];
+                ;
+                document.getElementById('DateFin').value = new Date().toISOString().split('T')[0];
+                ;
+                document.getElementById('ligneDateDebut').removeAttribute('style');
+                document.getElementById('ligneDateFin').removeAttribute('style');
+            }
+            // REGLE CHAMP ANNE FISCALE
+            if (!HIDE_DATE_FISCALE_FIELD.includes(concatCourtierTypeDocument)) {
+                document.getElementById('AnneeFiscale').value = '';
+                document.getElementById('ligneAnneeFiscale').style.display = 'none';
+            } else {
+                document.getElementById('AnneeFiscale').value = new Date().getFullYear();
+                document.getElementById('ligneAnneeFiscale').removeAttribute('style');
+            }
+            // REGLE CHAMP OPERATION
+            if (!HIDE_OPERATIONS_FIELD.includes(concatCourtierTypeDocument)) {
+                document.getElementById('Operation').value = '';
+                document.getElementById('ligneOperation').style.display = 'none';
+            } else {
+                document.getElementById('Operation').value = '';
+                document.getElementById('ligneOperation').removeAttribute('style');
+            }
+            // REGLE CHAMP CODE PROUIT
+            if (!HIDE_CODE_PRODUIT_FIELD.includes(concatCourtierTypeDocument)) {
+                document.getElementById('Codeproduit').value = '';
+                document.getElementById('ligneCodeProduit').style.display = 'none';
+            } else {
+                document.getElementById('Codeproduit').value = '';
+                document.getElementById('ligneCodeProduit').removeAttribute('style');
+            }
+            // GESTION DES EXCEPTIONS
+            if (
+                document.getElementById('Courtier').value === '7947'
+                && document.getElementById('TypeDocument').value === 'PRTFSTM'
+                && document.getElementById('SousTypeDocument').value === 'CCAR') {
+                document.getElementById('DateDebut').value = '';
+                document.getElementById('ligneDateDebut').style.display = 'none';
+                document.getElementById('DateFin').value = '';
+                document.getElementById('ligneDateFin').style.display = 'none';
+                document.getElementById('ligneAnneFiscale').removeAttribute('style');
+                document.getElementById('ligneAnneeFiscale').value = new Date().getFullYear();
+            }
         }
     }
-})
+}
 
 window.addEventListener('DOMContentLoaded', function (event) {
     console.log("CALLED BY WINDOW.ADDLISTENER");
     const courtierSelect = document.getElementById('Courtier');
     if (courtierSelect) {
-        updateDocumentFields(courtierSelect.id, courtierSelect.value,"reload");
+        updateDocumentFields(courtierSelect.id, courtierSelect.value,"reload",event);
     }
     const typeDocumentSelect = document.getElementById('TypeDocument');
     if (typeDocumentSelect) {
-        updateDocumentFields(typeDocumentSelect.id, typeDocumentSelect.value);
+        updateDocumentFields(typeDocumentSelect.id, typeDocumentSelect.value,"reload",event);
     }
     const sTypeDocumentSelect = document.getElementById('SousTypeDocument');
     if (false) {
         sTypeDocumentSelect.dispatchEvent(new Event('change'));
     }
 });
-
-
-
